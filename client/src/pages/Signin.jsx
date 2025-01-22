@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signInStart,signInFailure,signInSuccess } from "../../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 const Signin = () => {
   const [formData, setFormData] = useState({});
 
@@ -78,6 +79,7 @@ const dispatch = useDispatch()
         >
           Sign In
         </button>
+        <OAuth />
       </form>
       <div className="text-center mt-2">
         <p>
