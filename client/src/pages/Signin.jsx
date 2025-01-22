@@ -1,14 +1,19 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
+import { signInStart,signInFailure,signInSuccess } from "../../redux/user/userSlice";
 const Signin = () => {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
-  const [isLoading, setLoading] = useState(false);
+
+  /*state.user:
+The state parameter represents the entire Redux store.
+state.user refers to the slice of the Redux store managed by the userReducer (or userSlice in your case).*/
+
+  const {loading,error} = useSelector((state)=>state.user)
 
   const navigate = useNavigate();
-
+const dispatch = useDispatch()
   // form data handler
   const handleChange = (e) => {
     setFormData({
@@ -21,7 +26,7 @@ const Signin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      dispatch(signInStart());
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -33,18 +38,15 @@ const Signin = () => {
 
       // if not success in response then error set - response but some error
       if (data.success === false) {
-        setError(data.message);
-        setLoading(false);
+        dispatch(signInFailure(data.message))
         return;
       }
-      setLoading(false);
-      setError(null)
+      dispatch(signInSuccess(data))
       navigate('/')
 
       // no response error catch
     } catch (err) {
-      setLoading(false);
-      setError(err.message)
+      dispatch(signInFailure(err.message))
     }
   };
 
@@ -54,6 +56,7 @@ const Signin = () => {
       <h1 className="text-3xl text-center font-semibold my-8">Sign In</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
+        required
           id="email"
           type="email"
           className="border p-2 rounded-md"
@@ -61,6 +64,7 @@ const Signin = () => {
           onChange={handleChange}
         />
         <input
+        required
           id="password"
           type="password"
           className="border p-2 rounded-md"
@@ -68,7 +72,7 @@ const Signin = () => {
           onChange={handleChange}
         />
         <button
-          disabled={isLoading}
+          disabled={loading}
           type="submit"
           className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-400 transition-colors"
         >
