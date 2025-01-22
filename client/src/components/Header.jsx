@@ -1,8 +1,10 @@
 import { TbHomeSearch } from "react-icons/tb";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Header = () => {
+  const { currentUser } = useSelector((state) => state.user);
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="flex items-center p-4 justify-between max-w-6xl mx-auto">
@@ -43,14 +45,20 @@ const Header = () => {
               About
             </Link>
           </li>
-          <li>
-            <Link
-              to="/sign-in"
-              className="px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 shadow-sm transition duration-200"
-            >
-              Sign In
-            </Link>
-          </li>
+          {currentUser ? (
+            <li>
+              <Link to='/profile'><img src={currentUser.avatar} alt="" className="w-7 h-7 object-cover rounded-full" /></Link>
+            </li>
+          ) : (
+            <li>
+              <Link
+                to="/sign-in"
+                className="px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 shadow-sm transition duration-200"
+              >
+                Sign In
+              </Link>
+            </li>
+          )}
         </ul>
 
         {/* Mobile Hamburger Menu */}
